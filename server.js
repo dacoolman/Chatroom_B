@@ -13,7 +13,7 @@ app.get("/", function (request, response){
 })
 var server = app.listen(8000, function(){
 	console.log('listening on port 8000')
-});;
+});
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket) {
   console.log("WE ARE USING SOCKETS!");
