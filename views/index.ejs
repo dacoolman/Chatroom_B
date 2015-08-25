@@ -1,0 +1,126 @@
+<html>
+<head>
+	<style>
+	#wrapper{ display: none;
+		margin-left: 10px;
+		}
+	#popup{
+		border: 1px solid silver;
+		display: inline-block;
+		height: 150px;
+		width: 150px;
+		position: absolute;
+		text-align: center;
+		top: 170px;
+		left: 100px;
+
+	}
+	.user{
+		display: inline-block;
+		border: 1px solid silver;
+	}
+	#board{
+			display: inline-block;
+		border: 1px solid silver;
+		height: 400px;
+		width: 400px;
+		overflow: scroll;
+
+	}
+	</style>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>    
+   	<script type ="text/javascript">
+       $(document).ready(function (){
+       	form_clicked = false;
+       	all_users = {};
+      	var socket = io.connect();
+
+     
+socket.on('update_user', function (data){
+	my_html = '';
+	$('#board').html('');
+	for (var i = 0; i<data.comments.length; i++)
+	{
+		this_obj = data.comments[i]
+		for (value in this_obj)
+		{
+			my_html = '<b>' + value + ':</b> ' + this_obj[value] + '<br>';
+			$('#board').append(my_html);
+		}
+	}
+	var objDiv = document.getElementById("board");
+	objDiv.scrollTop = objDiv.scrollHeight;
+});
+
+socket.on('update_messages', function (data){
+	console.log(data);
+	
+	if (form_clicked)
+	{
+
+		my_html = '';
+		$('#board').html('');
+		for (var i = 0; i<data.comments.length; i++)
+		{
+			this_obj = data.comments[i]
+			for (value in this_obj)
+			{
+				my_html = '<b>' + value + ':</b> ' + this_obj[value] + '<br>';
+				$('#board').append(my_html);
+			}
+		}
+
+		var objDiv = document.getElementById("board");
+		objDiv.scrollTop = objDiv.scrollHeight;
+	}
+})
+
+$('#namepopup').submit(function(){
+	if ($('#name').val() != '')
+	{
+		console.log($('#name').val())
+		name = $('#name').val();
+		$('#popup').hide();
+		$('#wrapper').show();
+		form_clicked = true;
+		socket.emit('enter_user', {name: name});
+	}
+	return false;
+});
+
+$('#message').submit(function(){
+	if ($('#comment').val()!= '')
+	{
+		message = $('#comment').val();
+		$('#comment').val('');
+		socket.emit('add_message', {message: message});
+	}
+	return false;
+});
+
+});     
+    </script>
+</head>
+<body>
+	<h1>Chat with Sockets!</h1>
+	<i>Open this window in different browsers to see sockets in action</i><br><br>
+	<div id='popup'>Please enter your name<br><br>
+		<form id='namepopup'>
+			<input type='text' id='name' placeholder='Bob, Mike, etc.' />
+			<input type='submit' value='Enter' />
+		</form>
+	</div>
+	<div id='wrapper'>
+		<u>Conversation board</u><br>
+		<div id='board'></div>
+		<form id = 'message'>
+			<input type='text' id='comment' placeholder='Comment...' />
+			<button class="btn waves-effect waves-light" type="submit" name="action">Submit
+	  		</button>
+		</form>
+	</div>
+</body>
+</html>
