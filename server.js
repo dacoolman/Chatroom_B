@@ -11,12 +11,10 @@ app.get("/", function (request, response){
     // hard-coded user data
     response.render('index');
 })
-var server = app.listen(8000, function(){
+var server = app.listen(80, function(){
   console.log('listening on port 8000')
 });;
-var io = require('socket.io')
-//.listen(server);
-io.connect('//mabchatroom.herokuapp.com:80')
+var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket) {
   console.log("WE ARE USING SOCKETS!");
   console.log(socket.id);
