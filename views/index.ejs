@@ -36,8 +36,8 @@
        $(document).ready(function (){
        	form_clicked = false;
        	all_users = {};
-      	var socket = io.connect();
-//window.location.hostname
+      	var socket = io.connect(window.location.hostname);
+//
      
 socket.on('update_user', function (data){
 	my_html = '';

@@ -16,7 +16,7 @@ var server = app.listen(8000, function(){
 });;
 var io = require('socket.io')
 //.listen(server);
-io.connect('//mabchatroom.herokuapp.com')
+io.connect('//mabchatroom.herokuapp.com:80')
 io.sockets.on('connection', function (socket) {
   console.log("WE ARE USING SOCKETS!");
   console.log(socket.id);
